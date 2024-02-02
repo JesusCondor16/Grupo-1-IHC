@@ -1,0 +1,15 @@
+/* Estilos para la página de Reclamos */
+.contenedor-reclamos {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .reclamo-card {
+    margin: 10px;
+    padding: 20px;
+    display: inline-block;
+  }
+  
+  /* Agrega más estilos según sea necesario */
+  
+  

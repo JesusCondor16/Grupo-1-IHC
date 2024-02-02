@@ -1,0 +1,29 @@
+.contenedor-notas {
+    margin: 20px 0 0px 10px; /* Ajusta según sea necesario */    
+  }
+  
+  .notas-card {
+    width: 600px;
+    margin: 0 auto;
+    margin-left: 300px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .reclamo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px; /* Puedes ajustar el margen según sea necesario */
+  }
+  
+  .reclamo-container button {
+    margin-top: 10px; /* Puedes ajustar el margen según sea necesario */
+  }
+
+  h1 {
+    margin-left: 300px; /* Ajusta el valor según tus preferencias */
+  }

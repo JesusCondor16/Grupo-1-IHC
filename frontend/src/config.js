@@ -1,0 +1,1 @@
+export const API_URL = 'https://ihc-proyecto01.onrender.com'

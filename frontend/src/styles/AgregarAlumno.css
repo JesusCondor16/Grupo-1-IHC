@@ -1,0 +1,29 @@
+.contenedor-form {
+  margin-left: 450px;  /* Ajusta el valor según el ancho de tu barra lateral */
+  padding: 20px;
+}  
+  form {
+    width: 300px; /* Ajusta el ancho del formulario según tus necesidades */
+    margin-top: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

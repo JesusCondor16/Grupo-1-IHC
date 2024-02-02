@@ -1,0 +1,21 @@
+.contenedor-mis-reclamos {
+    text-align: center;
+    margin: 10px;
+    border: 2px solid gray;
+    margin-left: 400px;
+    border-radius: 10px;
+    display: inline-block;    
+  }
+  .reclamo-card {
+    margin-top: 20px;
+    width: 700px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 20px;    
+    display: flex;
+    flex-direction: row; 
+  }
+  .titulo-mis-reclamos {
+    margin-left: -10px; /* Ajusta el margen izquierdo según sea necesario */
+  }
+  

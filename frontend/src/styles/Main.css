@@ -1,0 +1,34 @@
+.dashboard-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el contenido horizontalmente */
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+.contenedor-icono {
+  margin-top: 20px;
+  text-align: center; /* Añade este estilo para centrar el contenido dentro del contenedor */
+}
+
+.icono-perfil {
+  transform: scale(3.5);
+  display: inline-block; /* Añade este estilo para corregir el espacio adicional */
+  
+}
+.contenedor-perfil {
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column; 
+  margin-left: 400px;
+}
+.contenedor-perfil h2 {
+  text-align: center;
+}

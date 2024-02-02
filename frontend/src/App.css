@@ -1,0 +1,25 @@
+.App {
+  width: 100vw;
+  min-height: 100%;  
+  position: absolute;  
+}
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    position: absolute;
+    /* ... otras propiedades ... */
+}
+}
+.header .icono {
+  font-size: 24px !important;
+}

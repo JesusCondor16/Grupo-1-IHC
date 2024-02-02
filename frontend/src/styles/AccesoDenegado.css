@@ -1,0 +1,10 @@
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+  
+  .alert-danger h2 {
+    color: #721c24;
+  }
+  
