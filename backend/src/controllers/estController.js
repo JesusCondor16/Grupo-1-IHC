@@ -22,6 +22,17 @@ module.exports.estController = {
         res.json({ error: "Error en el controlador" });
       });
   },
+  getEstudianteCod: (req, res) => {
+    const { codigo } = req.params;
+    EstModel.findOne({ codigo: codigo })
+      .select({ _id: 0, __v: 0, password: 0 })
+      .then((user) => {
+        res.json(user);
+      })
+      .catch((err) => {
+        res.json({ error: "Error en el controlador" });
+      });
+  },
   createEstudiante: (req, res) => {
     const {
       codigo,

@@ -72,7 +72,7 @@ router.get("/", estController.getAll);
  * @openapi
  * /estudiantes/{email}:
  *   get:
- *     summary: Obtener información de un estudiante
+ *     summary: Obtener información de un estudiante por email
  *     parameters:
  *       - in: path
  *         name: email
@@ -91,6 +91,30 @@ router.get("/", estController.getAll);
  *               $ref: '#/components/schemas/Estudiante'
  */
 router.get("/:email", estController.getEstudiante);
+
+/**
+ * @openapi
+ * /estudiantes/cod/{codigo}:
+ *   get:
+ *     summary: Obtener información de un estudiante por código
+ *     parameters:
+ *       - in: path
+ *         name: codigo
+ *         required: true
+ *         description: Código del estudiante.
+ *         schema:
+ *           type: string
+ *     tags:
+ *       - Estudiantes
+ *     responses:
+ *       200:
+ *         description: Información del estudiante obtenida correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Estudiante'
+ */
+router.get("/cod/:codigo", estController.getEstudianteCod);
 
 /**
  * @openapi
