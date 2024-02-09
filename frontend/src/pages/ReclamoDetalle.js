@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { API_URL } from '../config';
-import '../styles/ReclamoDetalle.css';
-import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { API_URL } from "../config";
+import "../styles/ReclamoDetalle.css";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  TextField,
+} from "@mui/material";
 
 const ReclamoDetalle = () => {
   const { id } = useParams();
   const [reclamo, setReclamo] = useState(null);
   const [mostrarCajaRespuesta, setMostrarCajaRespuesta] = useState(false);
-  const [respuesta, setRespuesta] = useState('');
+  const [respuesta, setRespuesta] = useState("");
 
   useEffect(() => {
     const fetchReclamo = async () => {
@@ -22,7 +28,7 @@ const ReclamoDetalle = () => {
           setRespuesta(data.respuesta);
         }
       } catch (error) {
-        console.error('Error fetching reclamo data:', error);
+        console.error("Error fetching reclamo data:", error);
       }
     };
 
@@ -36,14 +42,16 @@ const ReclamoDetalle = () => {
   const handleEnviarRespuesta = async () => {
     try {
       if (reclamo.isResuelto) {
-        console.log('No se puede enviar respuesta. El reclamo ya está resuelto.');
+        console.log(
+          "No se puede enviar respuesta. El reclamo ya está resuelto."
+        );
         return;
       }
 
       const response = await fetch(`${API_URL}/reclamos/resolver/${id}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           respuesta: respuesta,
@@ -51,14 +59,18 @@ const ReclamoDetalle = () => {
       });
 
       if (response.ok) {
-        console.log('Reclamo resuelto con éxito');
+        console.log("Reclamo resuelto con éxito");
         // Actualiza el estado para mostrar la respuesta después de resolver el reclamo
         setRespuesta(respuesta);
       } else {
-        console.error('Error al resolver el reclamo:', response.status, response.statusText);
+        console.error(
+          "Error al resolver el reclamo:",
+          response.status,
+          response.statusText
+        );
       }
     } catch (error) {
-      console.error('Error al resolver el reclamo:', error);
+      console.error("Error al resolver el reclamo:", error);
     }
   };
 
@@ -73,10 +85,16 @@ const ReclamoDetalle = () => {
         <CardContent>
           <Typography variant="h6">Reclamo ID: {reclamo._id}</Typography>
           <Typography>Email asociado: {reclamo.email_asociado}</Typography>
-          <Typography>Estado: {reclamo.isResuelto ? 'Resuelto' : 'No resuelto'}</Typography>
+          <Typography>
+            Estado: {reclamo.isResuelto ? "Resuelto" : "No resuelto"}
+          </Typography>
           <Typography>Descripción: {reclamo.descripcion}</Typography>
           {!reclamo.isResuelto && (
-            <Button variant="contained" color="primary" onClick={handleResolverReclamo}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleResolverReclamo}
+            >
               Resolver Reclamo
             </Button>
           )}
@@ -95,7 +113,11 @@ const ReclamoDetalle = () => {
                 />
               )}
               {!reclamo.isResuelto && (
-                <Button variant="contained" color="primary" onClick={handleEnviarRespuesta}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleEnviarRespuesta}
+                >
                   Enviar Respuesta
                 </Button>
               )}

@@ -49,6 +49,7 @@ module.exports.recController = {
       email_asociado: email_asociado,
       descripcion: descripcion,
       isResuelto: false,
+      fecha_emision: new Date().toLocaleDateString(),
     });
     nuevoReclamo
       .save()
@@ -65,6 +66,7 @@ module.exports.recController = {
     RecModel.findByIdAndUpdate(id, {
       respuesta: respuesta,
       isResuelto: true,
+      fecha_rpta: new Date().toLocaleDateString(),
     })
       .then((doc) => {
         res.json({ msg: "Reclamo resuelto" });
