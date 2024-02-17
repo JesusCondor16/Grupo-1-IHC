@@ -40,9 +40,9 @@ const Asignaturas = () => {
     } else if (transcript === 'tres') {
       numberValue = 3;
     } else if (transcript === 'cuatro') {
-        numberValue =4;
+        numberValue = 4;
     } else {
-      // Si no es "uno", "dos" o "tres", intenta convertir la transcripción a un número
+      
       numberValue = parseInt(transcript);
     }
         
