@@ -23,6 +23,7 @@ const Asignaturas = () => {
     const [modoEdicion, setModoEdicion] = useState(false);
     const [edicionHabilitada, setEdicionHabilitada] = useState(false);
     const cursoId = 1;
+    //probando
 
     useEffect(() => {
         fetchStudentGrades();
