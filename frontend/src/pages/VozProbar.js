@@ -25,7 +25,9 @@ const VozProbar = () => {
     SpeechRecognition.stopListening();
     setIsListening(false);
   };
-
+  
+  
+   
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return <span>La navegación por voz no es compatible con tu navegador.</span>;
   }
