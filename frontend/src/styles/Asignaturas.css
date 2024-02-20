@@ -39,3 +39,7 @@
     box-shadow: 24px 24px 0 0 #000;
     outline: none;
   }
+  /* Definición de la clase para texto rojo */
+  .nota-roja {
+    color: red;
+  }

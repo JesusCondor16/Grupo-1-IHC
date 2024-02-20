@@ -200,10 +200,10 @@ const Asignaturas = () => {
                                 <TableCell>{estudiante.telefono}</TableCell>
                                 <TableCell>{estudiante.email}</TableCell>
                                 <TableCell>{estudiante.is_delegado ? 'Sí' : 'No'}</TableCell>
-                                <TableCell>{estudiante.nota_ec}</TableCell>
-                                <TableCell>{estudiante.nota_ef}</TableCell>
-                                <TableCell>{estudiante.nota_ep}</TableCell>
-                                <TableCell>{estudiante.promedio}</TableCell>
+                                <TableCell className={parseInt(estudiante.nota_ec) <= 10 ? 'nota-roja' : ''}>{estudiante.nota_ec}</TableCell>
+                                <TableCell className={parseInt(estudiante.nota_ef) <= 10 ? 'nota-roja' : ''}>{estudiante.nota_ef}</TableCell>
+                                <TableCell className={parseInt(estudiante.nota_ep) <= 10 ? 'nota-roja' : ''}>{estudiante.nota_ep}</TableCell>
+                                <TableCell className={parseFloat(estudiante.promedio) <= 10 ? 'nota-roja' : ''}>{estudiante.promedio}</TableCell>
                                 <TableCell>
                                     <IconButton
                                         size="small"
