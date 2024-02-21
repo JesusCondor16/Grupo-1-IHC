@@ -10,8 +10,8 @@ const Asignaturas = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [notaEC, setNotaEC] = useState('');
-    const [notaEF, setNotaEF] = useState('');
     const [notaEP, setNotaEP] = useState('');
+    const [notaEF, setNotaEF] = useState('');    
     const [modoEdicion, setModoEdicion] = useState(false);
     const [edicionHabilitada, setEdicionHabilitada] = useState(false);
     const [campoActual, setCampoActual] = useState('');
@@ -79,13 +79,14 @@ const Asignaturas = () => {
             if (student.nota_ec !== null && student.nota_ef !== null && student.nota_ep !== null) {
                 setModoEdicion(true);
                 setNotaEC(String(student.nota_ec));
-                setNotaEF(String(student.nota_ef));
                 setNotaEP(String(student.nota_ep));
+                setNotaEF(String(student.nota_ef));
+                
             } else {
                 setModoEdicion(false);
                 setNotaEC('');
-                setNotaEF('');
                 setNotaEP('');
+                setNotaEF('');
             }
         }
     };
@@ -115,15 +116,15 @@ const Asignaturas = () => {
                         handleNotaChange('EC', currentRowIndex, number);
                         console.log('Nota EC:', number);
                         break;
-                    case 'EF':
-                        setNotaEF(number);
-                        handleNotaChange('EF', currentRowIndex, number);
-                        console.log('Nota EF:', number);
-                        break;
                     case 'EP':
                         setNotaEP(number);
                         handleNotaChange('EP', currentRowIndex, number);
                         console.log('Nota EP:', number);
+                        break;
+                    case 'EF':
+                        setNotaEF(number);
+                        handleNotaChange('EF', currentRowIndex, number);
+                        console.log('Nota EF:', number);
                         break;
                 }
             } else {
@@ -174,12 +175,12 @@ const Asignaturas = () => {
     
             switch (campo) {
                 case 'EC':
-                    nextCampo = 'EF';
-                    break;
-                case 'EF':
                     nextCampo = 'EP';
                     break;
                 case 'EP':
+                    nextCampo = 'EF';
+                    break;
+                case 'EF':
                     nextCampo = 'EC';
                     nextRowIndex += 1;
                     break;                
@@ -217,19 +218,20 @@ const Asignaturas = () => {
         try {
             if (
                 parseFloat(notaEC) >= 0 && parseFloat(notaEC) <= 20 &&
-                parseFloat(notaEF) >= 0 && parseFloat(notaEF) <= 20 &&
-                parseFloat(notaEP) >= 0 && parseFloat(notaEP) <= 20
+                parseFloat(notaEP) >= 0 && parseFloat(notaEP) <= 20 &&
+                parseFloat(notaEF) >= 0 && parseFloat(notaEF) <= 20 
+                
             ) {
-                console.log('Notas a guardar:', { nota_ec: parseFloat(notaEC), nota_ef: parseFloat(notaEF), nota_ep: parseFloat(notaEP) });
+                console.log('Notas a guardar:', { nota_ec: parseFloat(notaEC), nota_ep: parseFloat(notaEP), nota_ef: parseFloat(notaEF) });
                 const response = await fetch(`${API_URL}/cursosEst/${selectedStudent.codigo}/${cursoId}/editar-notas`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        nota_ec: parseFloat(notaEC) || 0,
-                        nota_ef: parseFloat(notaEF) || 0,
+                        nota_ec: parseFloat(notaEC) || 0,                        
                         nota_ep: parseFloat(notaEP) || 0,
+                        nota_ef: parseFloat(notaEF) || 0,
                     }),
                 });
                 if (response.ok) {
