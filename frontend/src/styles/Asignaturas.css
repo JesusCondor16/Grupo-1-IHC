@@ -42,4 +42,7 @@
   /* Definición de la clase para texto rojo */
   .nota-roja {
     color: red !important;
-}
+  }
+  .current-cell {
+    border: 3px solid hsl(222, 65%, 50%) !important; /* Cambia el color y el estilo del borde según tus preferencias */
+  } 

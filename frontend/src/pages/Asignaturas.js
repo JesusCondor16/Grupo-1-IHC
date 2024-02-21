@@ -2,17 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { API_URL } from '../config.js';
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, Menu, MenuItem, Modal, Backdrop, Fade, TextField, Button } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MicIcon from '@mui/icons-material/Mic';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import '../styles/Asignaturas.css';
-import wordsToNumbers from 'words-to-numbers';
 
 const Asignaturas = () => {
-    //voz
-    const { transcript, resetTranscript } = useSpeechRecognition();
-    const [isListening, setIsListening] = useState(false);
-    const [campoActual, setCampoActual] = useState('');
-    //
     const [estudiantes, setEstudiantes] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -22,44 +14,21 @@ const Asignaturas = () => {
     const [notaEP, setNotaEP] = useState('');
     const [modoEdicion, setModoEdicion] = useState(false);
     const [edicionHabilitada, setEdicionHabilitada] = useState(false);
+    const [campoActual, setCampoActual] = useState('');
+    const [currentRowIndex, setCurrentRowIndex] = useState(-1);
+    const [reconocimientoActivo, setReconocimientoActivo] = useState(false);
+    const [recognition, setRecognition] = useState(null);
     const cursoId = 1;
-    //probando
 
     useEffect(() => {
         fetchStudentGrades();
     }, []);
 
     useEffect(() => {
-        if (transcript !== '') {            
-            let numberValue;
-    // Intenta convertir la transcripción a un número
-    if (transcript === 'uno') {
-      numberValue = 1;
-    } else if (transcript === 'dos') {
-      numberValue = 2;
-    } else if (transcript === 'tres') {
-      numberValue = 3;
-    } else if (transcript === 'cuatro') {
-        numberValue = 4;
-    } else {
-      
-      numberValue = parseInt(transcript);
-    }
-        
-           
-            if (!isNaN(numberValue)) {
-                
-                if (campoActual === 'EC') {
-                    setNotaEC(numberValue);
-                } else if (campoActual === 'EF') {
-                    setNotaEF(numberValue);
-                } else if (campoActual === 'EP') {
-                    setNotaEP(numberValue);
-                }
-            }
-            resetTranscript();
+        if (campoActual !== '' && reconocimientoActivo) {
+            startContinuousListening(campoActual, currentRowIndex);
         }
-    }, [transcript, campoActual]);
+    }, [campoActual, currentRowIndex, reconocimientoActivo]);
 
     const fetchStudentGrades = async () => {
         try {
@@ -70,13 +39,12 @@ const Asignaturas = () => {
                 const notasData = await notasResponse.json();
                 return { ...estudiante, ...notasData };
             }));
-            console.log('Estudiantes con notas:', estudiantesConNotas); // Imprimir los datos de los estudiantes con notas en la consola
             setEstudiantes(estudiantesConNotas);
         } catch (error) {
             console.error('Error fetching estudiantes data:', error);
         }
     };
-  
+
     const handleOpenMenu = (event, student) => {
         if (event) {
             setAnchorEl(event.currentTarget);
@@ -96,6 +64,59 @@ const Asignaturas = () => {
         }
     };
 
+    useEffect(() => {
+        if (reconocimientoActivo) {
+            startContinuousListening();
+        } else {
+            stopContinuousListening();
+        }
+    }, [reconocimientoActivo]);
+
+    const startContinuousListening = () => {
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = true;
+    
+        recognition.onresult = (event) => {
+            let transcript = event.results[0][0].transcript;
+            console.log('Transcripción:', transcript);
+    
+            if (!isNaN(transcript)) {
+                switch (campoActual) {
+                    case 'EC':
+                        setNotaEC(Number(transcript));
+                        handleNotaChange('EC', currentRowIndex, transcript);
+                        console.log('Nota EC:', Number(transcript));
+                        break;
+                    case 'EF':
+                        setNotaEF(Number(transcript));
+                        handleNotaChange('EF', currentRowIndex, transcript);
+                        console.log('Nota EF:', Number(transcript));
+                        break;
+                    case 'EP':
+                        setNotaEP(Number(transcript));
+                        handleNotaChange('EP', currentRowIndex, transcript);
+                        console.log('Nota EP:', Number(transcript));
+                        break;
+                }
+            } else {
+                // Si el transcript no es un número, limpiar el transcript
+                transcript = ''; // Establecer el transcript como una cadena vacía
+                console.log('Transcript no es un número, limpiando transcript:', transcript);
+                startContinuousListening();
+            }
+        };
+        recognition.start();
+        setRecognition(recognition);
+    };
+    
+
+    const stopContinuousListening = () => {
+        if (recognition) {
+            recognition.stop();
+        }
+    };
+
     const handleCloseMenu = () => {
         setAnchorEl(null);
     };
@@ -107,23 +128,72 @@ const Asignaturas = () => {
     const handleCloseModal = () => {
         setOpenModal(false);
         setEdicionHabilitada(false);
+        setReconocimientoActivo(false);
     };
 
-    const handleCalificar = () => {
-        handleOpenMenu();
-        handleOpenModal();
-        setModoEdicion(false);
+    const handleCalificar = (campo, rowIndex) => {
+        setCampoActual(campo);
+        setCurrentRowIndex(rowIndex);        
     };
 
+    const handleNotaChange = (campo, rowIndex, value) => {
+        if (!isNaN(value)) {
+            const updatedEstudiantes = [...estudiantes];
+            updatedEstudiantes[rowIndex][`nota_${campo.toLowerCase()}`] = value;
+            setEstudiantes(updatedEstudiantes);
+    
+            let nextCampo = campo;
+            let nextRowIndex = rowIndex;
+    
+            switch (campo) {
+                case 'EC':
+                    nextCampo = 'EF';
+                    break;
+                case 'EF':
+                    nextCampo = 'EP';
+                    break;
+                case 'EP':
+                    nextCampo = 'EC';
+                    nextRowIndex += 1;
+                    break;                
+            }
+    
+            if (nextRowIndex >= estudiantes.length) {
+                nextRowIndex = 0;
+                nextCampo = 'EC';
+            }
+    
+            setCurrentRowIndex(nextRowIndex);
+            setCampoActual(nextCampo);
+    
+            // Calcular el promedio actualizado
+            const promedio = calculatePromedio(updatedEstudiantes[rowIndex]);
+            updatedEstudiantes[rowIndex]['promedio'] = promedio;
+            setEstudiantes(updatedEstudiantes);
+        } else {
+            alert('Por favor, ingrese un número válido para la nota.');
+        }
+    };
+    
+    const calculatePromedio = (estudiante) => {
+        const notas = ['nota_ec', 'nota_ef', 'nota_ep'];
+        let suma = 0;
+        notas.forEach(nota => {
+            suma += parseFloat(estudiante[nota]) || 0;
+        });
+        return (suma / notas.length).toFixed(2);
+    };
+    
+    
+    
     const handleGuardarCalificacion = async () => {
         try {
-            // Validar que las notas estén dentro del rango permitido (0 - 20)
             if (
                 parseFloat(notaEC) >= 0 && parseFloat(notaEC) <= 20 &&
                 parseFloat(notaEF) >= 0 && parseFloat(notaEF) <= 20 &&
                 parseFloat(notaEP) >= 0 && parseFloat(notaEP) <= 20
             ) {
-                // Realizar la solicitud al backend solo si las notas son válidas
+                console.log('Notas a guardar:', { nota_ec: parseFloat(notaEC), nota_ef: parseFloat(notaEF), nota_ep: parseFloat(notaEP) });
                 const response = await fetch(`${API_URL}/cursosEst/${selectedStudent.codigo}/${cursoId}/editar-notas`, {
                     method: 'PUT',
                     headers: {
@@ -137,6 +207,11 @@ const Asignaturas = () => {
                 });
                 if (response.ok) {
                     alert("Notas actualizadas correctamente");
+                    const nextRowIndex = currentRowIndex + 1;
+                    if (nextRowIndex < estudiantes.length) {
+                        setCurrentRowIndex(nextRowIndex);
+                        setCampoActual('EC');
+                    }
                 } else {
                     alert('Error al actualizar las notas:', response.statusText);
                 }
@@ -148,30 +223,24 @@ const Asignaturas = () => {
         } catch (error) {
             console.error('Error al guardar o actualizar las notas:', error);
         }
-    }; 
-  
+    };
     const handleEditarNotas = () => {
         setEdicionHabilitada(true);
         handleOpenModal();
     };
 
-    const startListening = (campo) => {
-        setIsListening(true);
-        SpeechRecognition.startListening({
-            language: 'es-ES' // Especifica el idioma español (España)
-        });
-        setCampoActual(campo);
+    const handleStartNotas = () => {
+        setCurrentRowIndex(0);
+        setCampoActual('EC');
+        setReconocimientoActivo(true);
     };
-    
-    const stopListening = () => {
-        setIsListening(false);
-        SpeechRecognition.stopListening();
-    };
-    
 
     return (
         <div className="contenedor-alumnos">
             <h1>Asignaturas</h1>
+            <Button variant="contained" onClick={handleStartNotas}>
+                Iniciar Establecimiento de Notas
+            </Button>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -191,63 +260,60 @@ const Asignaturas = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {estudiantes.map((estudiante) => (
-                            <TableRow key={estudiante.codigo}>
-                                <TableCell>{estudiante.codigo}</TableCell>
-                                <TableCell>{estudiante.nombre}</TableCell>
-                                <TableCell>{estudiante.apellido_pat}</TableCell>
-                                <TableCell>{estudiante.apellido_mat}</TableCell>
-                                <TableCell>{estudiante.telefono}</TableCell>
-                                <TableCell>{estudiante.email}</TableCell>
-                                <TableCell>{estudiante.is_delegado ? 'Sí' : 'No'}</TableCell>
-                                <TableCell className={(() => {
-                                const isNoteRed = estudiante.nota_ec <= 10;
-                                console.log("Nota EC:", estudiante.nota_ec, "¿Es roja?", isNoteRed);
-                                return isNoteRed ? "nota-roja" : '';
-                                })()}>{estudiante.nota_ec}</TableCell>
-
-                                <TableCell className={(() => {
-                                const isNoteRed = estudiante.nota_ef <= 10;
-                                console.log("Nota EF:", estudiante.nota_ef, "¿Es roja?", isNoteRed);
-                                return isNoteRed ? "nota-roja" : '';
-                                })()}>{estudiante.nota_ef}</TableCell>
-
-                                <TableCell className={(() => {
-                                const isNoteRed = estudiante.nota_ep <= 10;
-                                console.log("Nota EP:", estudiante.nota_ep, "¿Es roja?", isNoteRed);
-                                return isNoteRed ? "nota-roja" : '';
-                                })()}>{estudiante.nota_ep}</TableCell>
-
-                                <TableCell className={(() => {
-                                const isNoteRed = estudiante.promedio <= 10;
-                                console.log("Promedio:", estudiante.promedio, "¿Es roja?", isNoteRed);
-                                return isNoteRed ? "nota-roja" : '';
-                                })()}>{estudiante.promedio}</TableCell>
-
-
-                                <TableCell>
-                                    <IconButton
-                                        size="small"
-                                        aria-controls="actions-menu"
-                                        aria-haspopup="true"
-                                        onClick={(e) => handleOpenMenu(e, estudiante)}
-                                    >
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                    <Menu
-                                        id="actions-menu"
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleCloseMenu}
-                                        elevation={2}
-                                    >
-                                        <MenuItem onClick={handleCalificar}>Calificar</MenuItem>
-                                        <MenuItem onClick={handleEditarNotas}>Editar Notas</MenuItem>
-                                    </Menu>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
+                {estudiantes.map((estudiante, index) => (
+                <TableRow key={estudiante.codigo}>
+                    <TableCell>{estudiante.codigo}</TableCell>
+                    <TableCell>{estudiante.nombre}</TableCell>
+                    <TableCell>{estudiante.apellido_pat}</TableCell>
+                    <TableCell>{estudiante.apellido_mat}</TableCell>
+                    <TableCell>{estudiante.telefono}</TableCell>
+                    <TableCell>{estudiante.email}</TableCell>
+                    <TableCell>{estudiante.is_delegado ? 'Sí' : 'No'}</TableCell>
+                    <TableCell 
+                        className={campoActual === 'EC' && index === currentRowIndex ? 'current-cell' : ''}
+                        contentEditable={edicionHabilitada && modoEdicion}
+                        onBlur={(e) => handleNotaChange('EC', index, e.target.innerText)}
+                    >
+                        {estudiante.nota_ec}
+                    </TableCell>
+                    <TableCell 
+                        className={campoActual === 'EF' && index === currentRowIndex ? 'current-cell' : ''}
+                        contentEditable={edicionHabilitada && modoEdicion}
+                        onBlur={(e) => handleNotaChange('EF', index, e.target.innerText)}
+                    >
+                        {estudiante.nota_ef}
+                    </TableCell>
+                    <TableCell 
+                        className={campoActual === 'EP' && index === currentRowIndex ? 'current-cell' : ''}
+                        contentEditable={edicionHabilitada && modoEdicion}
+                        onBlur={(e) => handleNotaChange('EP', index, e.target.innerText)}
+                    >
+                        {estudiante.nota_ep}
+                    </TableCell>
+                    <TableCell>{estudiante.promedio}</TableCell>
+                    <TableCell>
+                        <IconButton
+                            size="small"
+                            aria-controls="actions-menu"
+                            aria-haspopup="true"
+                            onClick={(e) => handleOpenMenu(e, estudiante)}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="actions-menu"
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleCloseMenu}
+                            elevation={2}
+                        >
+                            <MenuItem onClick={handleCalificar}>Calificar</MenuItem>
+                            <MenuItem onClick={handleEditarNotas}>Editar Notas</MenuItem>
+                        </Menu>
+                    </TableCell>
+                </TableRow>
+            ))}
+            </TableBody>
                 </Table>
             </TableContainer>
             <Modal
@@ -271,9 +337,6 @@ const Asignaturas = () => {
                             disabled={!edicionHabilitada && modoEdicion}
                             inputProps={{ maxLength: 2 }}
                         />
-                        <IconButton onClick={() => startListening('EC')}>
-                            <MicIcon />
-                        </IconButton>
                         <TextField
                             label="Nota EF"
                             value={notaEF}
@@ -281,9 +344,6 @@ const Asignaturas = () => {
                             disabled={!edicionHabilitada && modoEdicion}
                             inputProps={{ maxLength: 2 }}
                         />
-                        <IconButton onClick={() => startListening('EF')}>
-                            <MicIcon />
-                        </IconButton>
                         <TextField
                             label="Nota EP"
                             value={notaEP}
@@ -291,9 +351,6 @@ const Asignaturas = () => {
                             disabled={!edicionHabilitada && modoEdicion}
                             inputProps={{ maxLength: 2 }}
                         />
-                        <IconButton onClick={() => startListening('EP')}>
-                            <MicIcon />
-                        </IconButton>
                         <Button variant="contained" onClick={handleGuardarCalificacion}>
                             Guardar Calificación
                         </Button>
