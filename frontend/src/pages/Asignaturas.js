@@ -238,7 +238,10 @@ const Asignaturas = () => {
     return (
         <div className="contenedor-alumnos">
             <h1>Asignaturas</h1>
-            <Button variant="contained" onClick={handleStartNotas}>
+            <Button variant="contained"
+            onClick={handleStartNotas}
+            className="custom-button"
+            >
                 Llenado automático
             </Button>
             <TableContainer component={Paper}>

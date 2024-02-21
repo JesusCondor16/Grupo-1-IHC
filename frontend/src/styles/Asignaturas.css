@@ -44,5 +44,10 @@
     color: red !important;
   }
   .current-cell {
-    border: 3px solid hsl(222, 65%, 50%) !important; /* Cambia el color y el estilo del borde según tus preferencias */
+    border: 3px solid hsl(0, 65%, 50%) !important; /* Cambia el color y el estilo del borde según tus preferencias */
   } 
+  .custom-button {
+    margin-left: 300px !important;
+    background-color: rgb(255, 0, 43) !important;
+    color: white;
+}
