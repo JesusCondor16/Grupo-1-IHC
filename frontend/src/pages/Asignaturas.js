@@ -29,17 +29,23 @@ const Asignaturas = () => {
             'seis': 6,
             'siete': 7,
             'ocho': 8,
-            'nueve': 9,
-            'diez': 10,
-            // Agrega más palabras si es necesario
+            '11': 11,
+            '12': 12,
+            '13': 13,
+            '14':14,
+            '15':15,
+            '16':16,
+            '17':17,
+            '18':18,
+            '19':19,
+            '20':20,
+            '9': 9,
+            '10': 10,           
         };
         const number = numberWords[text.toLowerCase()];
         return number !== undefined ? number : NaN;
     };
     const cursoId = 1;
-    
-   
-
     useEffect(() => {
         fetchStudentGrades();
     }, []);
@@ -290,7 +296,7 @@ const Asignaturas = () => {
             onClick={handleStartNotas}
             className="custom-button"
             >
-                Llenado automático
+                Iniciar Registro por Voz
             </Button>
             <TableContainer component={Paper}>
                 <Table>
@@ -304,8 +310,8 @@ const Asignaturas = () => {
                             <TableCell>Email</TableCell>
                             <TableCell>Delegado</TableCell>
                             <TableCell>Nota EC</TableCell>
-                            <TableCell>Nota EF</TableCell>
                             <TableCell>Nota EP</TableCell>
+                            <TableCell>Nota EF</TableCell>
                             <TableCell>Promedio</TableCell>
                             <TableCell>Acciones</TableCell>
                         </TableRow>
@@ -321,27 +327,33 @@ const Asignaturas = () => {
                     <TableCell>{estudiante.email}</TableCell>
                     <TableCell>{estudiante.is_delegado ? 'Sí' : 'No'}</TableCell>
                     <TableCell 
-                        className={campoActual === 'EC' && index === currentRowIndex ? 'current-cell' : ''}
+                        className={`${campoActual === 'EC' && index === currentRowIndex ? 'current-cell' : ''} ${estudiante.nota_ec >= 0 && estudiante.nota_ec <= 10 ? 'nota-desaprobatoria' : ''}`}
                         contentEditable={edicionHabilitada && modoEdicion}
                         onBlur={(e) => handleNotaChange('EC', index, e.target.innerText)}
                     >
                         {estudiante.nota_ec}
                     </TableCell>
                     <TableCell 
-                        className={campoActual === 'EF' && index === currentRowIndex ? 'current-cell' : ''}
+                        className={`${campoActual === 'EP' && index === currentRowIndex ? 'current-cell' : ''} ${estudiante.nota_ep >= 0 && estudiante.nota_ep <= 10 ? 'nota-desaprobatoria' : ''}`}
+                        contentEditable={edicionHabilitada && modoEdicion}
+                        onBlur={(e) => handleNotaChange('EP', index, e.target.innerText)}
+                    >
+                        {estudiante.nota_ep}
+                    </TableCell>
+                    <TableCell 
+                        className={`${campoActual === 'EF' && index === currentRowIndex ? 'current-cell' : ''} ${estudiante.nota_ef >= 0 && estudiante.nota_ef <= 10 ? 'nota-desaprobatoria' : ''}`}
                         contentEditable={edicionHabilitada && modoEdicion}
                         onBlur={(e) => handleNotaChange('EF', index, e.target.innerText)}
                     >
                         {estudiante.nota_ef}
                     </TableCell>
                     <TableCell 
-                        className={campoActual === 'EP' && index === currentRowIndex ? 'current-cell' : ''}
-                        contentEditable={edicionHabilitada && modoEdicion}
-                        onBlur={(e) => handleNotaChange('EP', index, e.target.innerText)}
+                    className={`${campoActual === 'promedio' && index === currentRowIndex ? 'current-cell' : ''} ${estudiante.promedio >= 0 && estudiante.promedio <= 10 ? 'nota-desaprobatoria' : ''}`}
+                    contentEditable={edicionHabilitada && modoEdicion}
+                    onBlur={(e) => handleNotaChange('promedio', index, e.target.innerText)}
                     >
-                        {estudiante.nota_ep}
+                    {estudiante.promedio}
                     </TableCell>
-                    <TableCell>{estudiante.promedio}</TableCell>
                     <TableCell>
                         <IconButton
                             size="small"

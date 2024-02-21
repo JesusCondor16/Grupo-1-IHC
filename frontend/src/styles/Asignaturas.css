@@ -40,7 +40,7 @@
     outline: none;
   }
   /* Definición de la clase para texto rojo */
-  .nota-roja {
+  .nota-desaprobatoria {
     color: red !important;
   }
   .current-cell {
