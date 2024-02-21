@@ -41,5 +41,5 @@
   }
   /* Definición de la clase para texto rojo */
   .nota-roja {
-    color: red !important;
-}
+    color: red;
+  }
