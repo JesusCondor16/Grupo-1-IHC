@@ -239,7 +239,7 @@ const Asignaturas = () => {
         <div className="contenedor-alumnos">
             <h1>Asignaturas</h1>
             <Button variant="contained" onClick={handleStartNotas}>
-                Iniciar Establecimiento de Notas
+                Llenado automático
             </Button>
             <TableContainer component={Paper}>
                 <Table>
