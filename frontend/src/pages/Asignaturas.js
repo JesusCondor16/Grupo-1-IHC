@@ -104,34 +104,7 @@ const Asignaturas = () => {
         recognition.continuous = true;
     
         recognition.onresult = (event) => {
-            /*let transcript = event.results[0][0].transcript;
-            console.log('Transcripción:', transcript);
-    
-            if (!isNaN(transcript)) {
-                switch (campoActual) {
-                    case 'EC':
-                        setNotaEC(Number(transcript));
-                        handleNotaChange('EC', currentRowIndex, transcript);
-                        console.log('Nota EC:', Number(transcript));
-                        break;
-                    case 'EF':
-                        setNotaEF(Number(transcript));
-                        handleNotaChange('EF', currentRowIndex, transcript);
-                        console.log('Nota EF:', Number(transcript));
-                        break;
-                    case 'EP':
-                        setNotaEP(Number(transcript));
-                        handleNotaChange('EP', currentRowIndex, transcript);
-                        console.log('Nota EP:', Number(transcript));
-                        break;
-                }
-            } else {
-                // Si el transcript no es un número, limpiar el transcript
-                transcript = ''; // Establecer el transcript como una cadena vacía
-                console.log('Transcript no es un número, limpiando transcript:', transcript);
-                startContinuousListening();
-            }*/
-            let transcript = event.results[0][0].transcript.trim().toLowerCase();
+          let transcript = event.results[0][0].transcript.trim().toLowerCase();
             console.log('Transcripción:', transcript);
         
             const number = convertTextToNumber(transcript);
@@ -401,16 +374,16 @@ const Asignaturas = () => {
                             inputProps={{ maxLength: 2 }}
                         />
                         <TextField
-                            label="Nota EF"
-                            value={notaEF}
-                            onChange={(e) => setNotaEF(e.target.value)}
+                            label="Nota EP"
+                            value={notaEP}
+                            onChange={(e) => setNotaEP(e.target.value)}
                             disabled={!edicionHabilitada && modoEdicion}
                             inputProps={{ maxLength: 2 }}
                         />
                         <TextField
-                            label="Nota EP"
-                            value={notaEP}
-                            onChange={(e) => setNotaEP(e.target.value)}
+                            label="Nota EF"
+                            value={notaEF}
+                            onChange={(e) => setNotaEF(e.target.value)}
                             disabled={!edicionHabilitada && modoEdicion}
                             inputProps={{ maxLength: 2 }}
                         />
