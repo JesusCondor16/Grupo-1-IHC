@@ -18,7 +18,27 @@ const Asignaturas = () => {
     const [currentRowIndex, setCurrentRowIndex] = useState(-1);
     const [reconocimientoActivo, setReconocimientoActivo] = useState(false);
     const [recognition, setRecognition] = useState(null);
+    const convertTextToNumber = (text) => {
+        const numberWords = {
+            'cero': 0,
+            'uno': 1,
+            'dos': 2,
+            'tres': 3,
+            'cuatro': 4,
+            'cinco': 5,
+            'seis': 6,
+            'siete': 7,
+            'ocho': 8,
+            'nueve': 9,
+            'diez': 10,
+            // Agrega más palabras si es necesario
+        };
+        const number = numberWords[text.toLowerCase()];
+        return number !== undefined ? number : NaN;
+    };
     const cursoId = 1;
+    
+   
 
     useEffect(() => {
         fetchStudentGrades();
@@ -78,7 +98,7 @@ const Asignaturas = () => {
         recognition.continuous = true;
     
         recognition.onresult = (event) => {
-            let transcript = event.results[0][0].transcript;
+            /*let transcript = event.results[0][0].transcript;
             console.log('Transcripción:', transcript);
     
             if (!isNaN(transcript)) {
@@ -97,6 +117,34 @@ const Asignaturas = () => {
                         setNotaEP(Number(transcript));
                         handleNotaChange('EP', currentRowIndex, transcript);
                         console.log('Nota EP:', Number(transcript));
+                        break;
+                }
+            } else {
+                // Si el transcript no es un número, limpiar el transcript
+                transcript = ''; // Establecer el transcript como una cadena vacía
+                console.log('Transcript no es un número, limpiando transcript:', transcript);
+                startContinuousListening();
+            }*/
+            let transcript = event.results[0][0].transcript.trim().toLowerCase();
+            console.log('Transcripción:', transcript);
+        
+            const number = convertTextToNumber(transcript);
+            if (!isNaN(number)) {
+                switch (campoActual) {
+                    case 'EC':
+                        setNotaEC(number);
+                        handleNotaChange('EC', currentRowIndex, number);
+                        console.log('Nota EC:', number);
+                        break;
+                    case 'EF':
+                        setNotaEF(number);
+                        handleNotaChange('EF', currentRowIndex, number);
+                        console.log('Nota EF:', number);
+                        break;
+                    case 'EP':
+                        setNotaEP(number);
+                        handleNotaChange('EP', currentRowIndex, number);
+                        console.log('Nota EP:', number);
                         break;
                 }
             } else {
