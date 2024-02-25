@@ -292,6 +292,7 @@ const Asignaturas = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+
                 {estudiantes.map((estudiante, index) => (
                 <TableRow key={estudiante.codigo}>
                     <TableCell>{estudiante.codigo}</TableCell>
@@ -352,6 +353,7 @@ const Asignaturas = () => {
                 </TableRow>
             ))}
             </TableBody>
+
                 </Table>
             </TableContainer>
             <Modal
